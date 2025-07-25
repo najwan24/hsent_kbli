@@ -1,4 +1,7 @@
 2_data_splitting/data/output/mini_test.csv
 2_data_splitting/data/output/test.csv
 2_data_splitting/data/output/train.csv
+.env
+
+
 .gitignore
