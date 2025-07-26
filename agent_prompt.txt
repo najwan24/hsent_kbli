@@ -1,0 +1,70 @@
+##3__gold_label_curation/src/
+
+
+You are a senior Python developer tasked with analyzing a research project codebase in folder : 3__gold_label_curation. 
+
+Analyze the following Python files and provide:
+1. Code quality assessment
+2. Dependency mapping between files
+3. Refactoring recommendations
+4. Module structure suggestions
+5. Potential issues or anti-patterns
+
+1. SCRIPTS folder: Contains executable workflow files with long, redundant code
+2. SRC folder: Contains modules that should be reusable libraries
+3. PROBLEM: Duplicate functions, unclear relationships, hard to maintain
+
+Refactor this long script by:
+1. Moving reusable functions to src/ modules
+2. Keeping only the main execution logic
+3. Using imports from src/ instead of duplicate code
+4. Adding proper error handling and logging
+
+SCRIPT: {script_name}
+CURRENT CODE: {script_content}
+AVAILABLE SRC MODULES: {src_modules}
+FUNCTIONS TO MOVE: {functions_to_move}
+
+Return:
+1. Simplified script (main execution only)
+2. Updated src/ modules with moved functions
+3. Import statements needed
+4. remove duplicates script file
+
+Files to analyze in scripts folder: 
+00_setup_and_validate.py
+01_prepare_codebook.py
+02a_add_unique_ids.py
+02b_test_rate_limiting.py
+03a_run_pilot_study_backup.py
+03a_run_pilot_study_new.py
+03a_run_pilot_study_refactored.py
+03b_run_multi_model_pilot.py
+04a_analyze_results.py
+04b_analyze_gemini_2_5.py
+analyze_gemini_2_5.py
+
+
+
+
+
+
+
+Please make Sequential numbering (00_, 02a_, 03a_) to show processing pipeline steps and also explain Code quality assessment:
+Directory: hsent_kbli\3_gold_label_curation\scripts
+
+Files to analyze:
+add_unique_ids.py
+analyze_gemini_2_5.py
+analyze_results.py
+prepare_codebook.py
+run_multi_model_pilot.py
+run_pilot_study.py
+setup_and_validate.py
+test_rate_limiting.py
+
+
+you can also check this file in folder to understand Dependency mapping between files and provide recommendations of structure:
+hsent_kbli\3_gold_label_curation\data\input
+hsent_kbli\3_gold_label_curation\notebooks\analyze_pilot.ipynb
+hsent_kbli\3_gold_label_curation\output

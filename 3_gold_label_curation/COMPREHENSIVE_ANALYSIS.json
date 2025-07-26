@@ -1,0 +1,206 @@
+{
+  "project_analysis": {
+    "codebase_overview": {
+      "total_scripts": 11,
+      "total_src_modules": 8,
+      "duplicate_function_count": 47,
+      "lines_of_code_total": "~4000+",
+      "redundancy_percentage": "~65%"
+    },
+    "critical_issues": [
+      {
+        "severity": "HIGH", 
+        "type": "Code Duplication",
+        "description": "Same functions duplicated across 3-4 scripts",
+        "impact": "Maintenance nightmare, inconsistent behavior"
+      },
+      {
+        "severity": "HIGH",
+        "type": "Monolithic Architecture", 
+        "description": "Scripts contain 500+ lines mixing concerns",
+        "impact": "Hard to test, debug, and extend"
+      },
+      {
+        "severity": "MEDIUM",
+        "type": "Inconsistent Naming",
+        "description": "Multiple versions of same script with different names",
+        "impact": "Confusion, unclear which version to use"
+      }
+    ],
+    "duplicate_functions": {
+      "core_api_functions": {
+        "configure_gemini_api": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py", 
+            "scripts/02b_test_rate_limiting.py"
+          ],
+          "consolidate_to": "src/api/gemini_client.py",
+          "status": "COMPLETED"
+        },
+        "get_rate_limit_delay": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py",
+            "scripts/02b_test_rate_limiting.py"
+          ],
+          "consolidate_to": "src/api/gemini_client.py", 
+          "status": "COMPLETED"
+        },
+        "call_gemini_api": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/api/gemini_client.py",
+          "status": "COMPLETED"
+        }
+      },
+      "data_loading_functions": {
+        "load_hierarchical_codebook": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py",
+            "src/data/data_loader.py"
+          ],
+          "consolidate_to": "src/data/data_loader.py",
+          "status": "COMPLETED"
+        },
+        "load_test_data": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py", 
+            "scripts/03a_run_pilot_study_new.py",
+            "src/data/data_loader.py"
+          ],
+          "consolidate_to": "src/data/data_loader.py",
+          "status": "COMPLETED"
+        },
+        "load_master_template": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py",
+            "src/data/data_loader.py"
+          ],
+          "consolidate_to": "src/data/data_loader.py",
+          "status": "COMPLETED"
+        }
+      },
+      "utility_functions": {
+        "extract_json_from_response": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/utils/json_parser.py",
+          "status": "COMPLETED"
+        },
+        "save_result_to_jsonl": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/utils/json_parser.py",
+          "status": "COMPLETED"  
+        },
+        "load_existing_results": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/utils/json_parser.py",
+          "status": "COMPLETED"
+        }
+      },
+      "business_logic_functions": {
+        "build_prompt_for_sample": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/pipeline/pilot_runner.py",
+          "status": "COMPLETED"
+        },
+        "format_hierarchy": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/pipeline/pilot_runner.py",
+          "status": "COMPLETED"
+        },
+        "add_metadata_to_result": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/pipeline/pilot_runner.py",
+          "status": "COMPLETED"
+        }
+      },
+      "cli_functions": {
+        "parse_arguments": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/cli/arguments.py",
+          "status": "COMPLETED"
+        },
+        "list_available_models": {
+          "found_in": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py"
+          ],
+          "consolidate_to": "src/cli/arguments.py",
+          "status": "COMPLETED"
+        }
+      }
+    },
+    "refactoring_recommendations": {
+      "immediate_actions": [
+        {
+          "priority": 1,
+          "action": "Remove duplicate script files",
+          "files_to_remove": [
+            "scripts/03a_run_pilot_study_backup.py",
+            "scripts/03a_run_pilot_study_new.py",
+            "scripts/analyze_gemini_2_5.py"
+          ],
+          "reason": "Consolidated functionality exists in src/ modules"
+        },
+        {
+          "priority": 2, 
+          "action": "Refactor remaining monolithic scripts",
+          "files_to_refactor": [
+            "scripts/00_setup_and_validate.py",
+            "scripts/01_prepare_codebook.py", 
+            "scripts/02a_add_unique_ids.py",
+            "scripts/02b_test_rate_limiting.py",
+            "scripts/03b_run_multi_model_pilot.py",
+            "scripts/04a_analyze_results.py",
+            "scripts/04b_analyze_gemini_2_5.py"
+          ]
+        },
+        {
+          "priority": 3,
+          "action": "Create missing src/ modules",
+          "modules_to_create": [
+            "src/validation/setup_validator.py",
+            "src/analysis/results_analyzer.py",
+            "src/processing/id_generator.py"
+          ]
+        }
+      ]
+    },
+    "target_architecture": {
+      "scripts_folder": "Thin CLI wrappers (20-50 lines each)",
+      "src_api": "GeminiClient class with all API logic",
+      "src_data": "DataLoader class with all data operations", 
+      "src_utils": "Common utilities and helpers",
+      "src_pipeline": "Business logic and workflow orchestration",
+      "src_cli": "Argument parsing and CLI interfaces",
+      "src_analysis": "Results analysis and reporting",
+      "src_validation": "Setup validation and testing"
+    }
+  }
+}

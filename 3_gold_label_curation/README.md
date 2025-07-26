@@ -2,258 +2,109 @@
 
 This module implements the ACSES (Automated Classification System Evaluation Study) pilot study to determine the best LLM for KBLI code validation using hierarchical prompting.
 
-## Overview
+## High-Level Project Overview
 
-The pilot study evaluates different Gemini models (Flash vs Pro) on a subset of job descriptions to determine which model provides the most reliable and accurate KBLI code validation for full-scale data curation.
+The ACSES pilot study is designed to evaluate and compare different Gemini language models for automated job description classification using the Indonesian Standard Industrial Classification (KBLI) system. This robust, production-ready implementation ensures reliable data curation at scale.
 
-## 🛡️ Robust & Resumable Implementation
+### Key Features
 
-This implementation uses **JSONL format** and **resume capability** to ensure zero data loss:
+- **Multi-Model Evaluation**: Compare Gemini Flash, Pro, and Flash Lite models
+- **Hierarchical Classification**: Uses structured KBLI codebook for accurate classification
+- **Robust Resume Capability**: Zero data loss with JSONL format and smart progress tracking
+- **Production-Ready**: Handles API limits, network interruptions, and resource exhaustion gracefully
+- **Comprehensive Analysis**: Full pipeline from data preparation to performance evaluation
 
-- **✅ Never Lose Progress**: Each API result saved immediately, never overwritten
-- **✅ Resume Anywhere**: If interrupted (power, network, API limits), just restart the script
-- **✅ Smart Progress Tracking**: Knows exactly which sample+run combinations are complete  
-- **✅ Resource Exhaustion Safe**: Handles API quota limits gracefully
-- **✅ Production Ready**: Designed for long-running, mission-critical data curation
+### Research Objectives
 
-> **Why JSONL?** Unlike JSON arrays that must be rewritten entirely, JSONL appends each result as a new line. This means your progress is never lost, even during unexpected interruptions.
+1. **Model Performance Comparison**: Determine which Gemini model provides the highest accuracy for KBLI classification
+2. **Reliability Assessment**: Evaluate consistency across multiple runs per sample
+3. **Scalability Testing**: Validate approach for large-scale data curation
+4. **Cost-Effectiveness**: Compare model performance vs. API costs
+
+## Documentation Structure
+
+For detailed information, see the organized documentation:
+
+- **[Installation & Setup](docs/setup.md)**: Environment configuration and API setup
+- **[Workflow Guide](docs/workflow.md)**: Step-by-step pipeline execution  
+- **[API Reference](docs/api_reference.md)**: Code documentation and technical details
+
+## Quick Start
+
+1. **Setup Environment**: Follow [setup instructions](docs/setup.md)
+2. **Run Pipeline**: Follow [workflow guide](docs/workflow.md)
+3. **API Reference**: Check [code documentation](docs/api_reference.md)
 
 ## Directory Structure
 
 ```
 3_gold_label_curation/
+├── src/                           # 📚 Core library code (reusable modules)
+│   ├── config.py                  # Centralized configuration management
+│   ├── utils/                     # Common utilities and helpers
+│   ├── api/                       # API client implementations
+│   ├── pipeline/                  # Data processing pipeline components
+│   └── analysis/                  # Analysis and evaluation modules
+├── scripts/                       # � Executable entry points
+│   ├── prepare_codebook.py        # Phase 1: Codebook preparation
+│   ├── add_unique_ids.py          # Phase 2A: Add UUID identifiers
+│   ├── run_pilot_study.py         # Phase 2B: Execute pilot study
+│   ├── analyze_results.py         # Analysis and reporting
+│   └── setup_and_validate.py     # Environment validation
+├── docs/                          # �📚 Consolidated Documentation
+│   ├── setup.md                   # Installation and environment setup
+│   ├── workflow.md                # Step-by-step pipeline documentation  
+│   └── api_reference.md           # Code documentation and API reference
 ├── data/
-│   ├── input/
-│   │   ├── kbli_codebook.csv      # Original KBLI codebook
-│   │   └── mini_test.csv          # Test dataset for pilot
-│   ├── output/
-│       ├── kbli_codebook_hierarchical.csv  # Processed hierarchical codebook
-│       ├── pilot_results_*.jsonl           # Pilot study results (JSONL format)
-│       └── pilot_analysis_summary.json     # Analysis summary
-├── notebooks/
-│   └── analyze_pilot.ipynb        # Analysis and comparison notebook
-├── prompts/
-│   └── master_prompt.txt          # LLM prompt template
-├── src/
-│   ├── 00_prepare_codebook.py     # Phase 1: Codebook preparation
-│   ├── 03a_run_pilot_study.py     # Phase 2: Single model pilot
-│   └── 03b_run_multi_model_pilot.py # Phase 2: Multi-model comparison
+│   ├── input/                     # Input datasets and codebooks
+│   └── output/                    # Generated results and analysis
+├── notebooks/                     # Jupyter analysis notebooks
+├── prompts/                       # LLM prompt templates
+├── tests/                         # Unit and integration tests
 ├── requirements.txt               # Python dependencies
-├── .env.example                   # Environment variable template
-└── README.md                      # This file
+└── README.md                      # This overview file
 ```
 
-## Setup Instructions
+## Implementation Highlights
 
-### 1. Install Dependencies
+### 🛡️ Robust & Resumable Architecture
+- **JSONL Format**: Each API result saved immediately, never overwritten
+- **Resume Anywhere**: If interrupted, just restart the script
+- **Smart Progress Tracking**: Knows exactly which sample+run combinations are complete
+- **Resource Exhaustion Safe**: Handles API quota limits gracefully
 
-```bash
-cd 3_gold_label_curation
-pip install -r requirements.txt
-```
+### 🔄 Production-Ready Features
+- **Rate Limiting**: Automatic compliance with API limits
+- **Error Handling**: Comprehensive error recovery and logging
+- **UUID Tracking**: Unique identifiers for perfect data lineage
+- **Multi-Model Support**: Compare different Gemini models systematically
 
-### 2. Configure API Access
+## Key Benefits
 
-1. Get your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Copy the environment template:
-   ```bash
-   cp .env.example .env
-   ```
-3. Edit `.env` and add your API key:
-   ```bash
-   GEMINI_API_KEY=your_actual_api_key_here
-   ```
+### UUID Implementation Benefits
+- 🆔 **Global Unique IDs**: Each sample has a globally unique identifier
+- 🔄 **Robust Resume**: Perfect tracking with UUID+run_number combinations
+- 🔗 **Data Lineage**: Complete traceability from raw data to results
+- 🐛 **Enhanced Debugging**: Easy identification of problematic samples
 
-### 3. Load Environment Variables (if using .env file)
+### JSONL Architecture Benefits  
+- 💾 **Zero Data Loss**: Each result saved immediately, never overwritten
+- ⚡ **Resume Anywhere**: Interrupted processes continue exactly where they left off
+- 🎯 **Smart Progress**: Automatic detection of completed sample+run combinations
+- 🛡️ **Error Resilience**: Graceful handling of API limits and network issues
 
-```bash
-# For PowerShell
-Get-Content .env | ForEach-Object { 
-    $key, $value = $_ -split '=', 2
-    [Environment]::SetEnvironmentVariable($key, $value, "Process")
-}
-
-# Or set directly in PowerShell
-$env:GEMINI_API_KEY="your_actual_api_key_here"
-```
-
-## Execution Workflow
-
-### Phase 1: Prepare Hierarchical Codebook
-
-Transform the KBLI codebook into a hierarchical format suitable for LLM prompts:
-
-```bash
-python src/00_prepare_codebook.py
-```
-
-**What it does:**
-- Loads `data/input/kbli_codebook.csv`
-- Creates hierarchical structure for 5-digit codes
-- Outputs `data/output/kbli_codebook_hierarchical.csv`
-
-### Phase 2A: Add Unique IDs (Recommended)
-
-Add UUID identifiers to your dataset for better tracking:
-
-```bash
-python src/02a_add_unique_ids.py
-# Or use the convenience script:
-python src/add_ids.py
-```
-
-**What it does:**
-- Adds UUID column to `mini_test.csv`
-- Creates `mini_test_with_ids.csv` with unique identifiers
-- Enables robust tracking across interruptions and analyses
-- Improves data lineage and debugging capabilities
-
-**Benefits of UUIDs:**
-- 🔍 Better tracking in distributed processing
-- 📊 Robust data lineage and audit trails  
-- 🔄 Enables safe resumption and error recovery
-- 🔗 Facilitates data merging and analysis
-- 🐛 Improved debugging and reproducibility
-
-### Phase 2B: Run Pilot Study
-
-#### Option A: Single Model Pilot
-
-```bash
-python src/03a_run_pilot_study.py
-```
-
-**Configuration options** (edit the script):
-- `MODEL_NAME`: Choose between "gemini-1.5-flash-latest" or "gemini-1.5-pro-latest"
-- `N_RUNS`: Number of runs per sample (default: 3)
-- `TEMPERATURE`: Generation temperature (default: 0.7)
-
-#### Option B: Multi-Model Comparison
-
-```bash
-python src/03b_run_multi_model_pilot.py
-```
-
-**What it does:**
-- Runs pilot study for both Flash and Pro models
-- Automatically manages model switching
-- Saves separate result files for each model
-- Provides comprehensive comparison
-
-### Phase 3: Analysis
-
-Open and run the analysis notebook:
-
-```bash
-jupyter notebook notebooks/analyze_pilot.ipynb
-```
-
-**Analysis includes:**
-1. **Success Rate**: API call reliability by model
-2. **Reasoning Quality**: Manual inspection of LLM reasoning
-3. **Confidence Calibration**: How well confidence scores predict correctness
-4. **Consensus Analysis**: Agreement across multiple runs per sample
-
-## Key Files Explained
-
-### Input Files
-
-- **`kbli_codebook.csv`**: Original Indonesian Standard Industrial Classification codebook
-- **`mini_test.csv`**: Test dataset with columns:
-  - `text`: Job description text
-  - `kbli_code`: Assigned 5-digit KBLI code
-  - `category`: Category letter
-  - `kbli_count`: Frequency count
-
-### Generated Files
-
-- **`kbli_codebook_hierarchical.csv`**: Hierarchical codebook with columns:
-  - `code_5`, `title_5`, `desc_5`: Sub-class level
-  - `code_4`, `title_4`: Class level
-  - `code_3`, `title_3`: Group level
-  - `code_2`, `title_2`: Division level
-  - `code_1`, `title_1`: Section level
-
-- **`pilot_results_*.json`**: Results with metadata:
-  - `is_correct`: LLM's correctness judgment
-  - `confidence_score`: Confidence level (0.0-1.0)
-  - `reasoning`: Detailed explanation
-  - `alternative_codes`: Suggested alternatives if incorrect
-  - Sample metadata and processing information
-
-## Expected Outputs
+## Expected Outcomes
 
 ### Success Metrics
-- **Success Rate**: >90% for production readiness
-- **Consensus Rate**: >60% unanimous agreement across runs
-- **Confidence Calibration**: Higher confidence for correct predictions
+- **Accuracy Rate**: Target >90% for production readiness
+- **Consensus Rate**: Target >60% unanimous agreement across runs
+- **Reliability**: Consistent performance across different sample types
 
-### Decision Criteria
-- Choose model with highest success rate and best reasoning quality
-- Consider cost-performance trade-offs (Flash vs Pro)
-- Evaluate consensus patterns for quality control implementation
-
-## Troubleshooting
-
-### Common Issues
-
-1. **API Key Error**:
-   ```
-   ValueError: GEMINI_API_KEY environment variable not found
-   ```
-   **Solution**: Ensure your API key is properly set in environment variables
-
-2. **Missing Hierarchical Codebook**:
-   ```
-   FileNotFoundError: Hierarchical codebook not found
-   ```
-   **Solution**: Run `python src/00_prepare_codebook.py` first
-
-3. **JSON Parsing Errors**:
-   - Check API rate limits
-   - Verify prompt template formatting
-   - Review model temperature settings
-
-4. **Low Success Rate**:
-   - Reduce temperature for more consistent outputs
-   - Adjust prompt template for clearer instructions
-   - Check input data quality
-
-### Performance Optimization
-
-- **Batch Processing**: Process in chunks for large datasets
-- **Rate Limiting**: Add delays between API calls
-- **Error Recovery**: Implement retry logic for failed calls
-- **Parallel Processing**: Use multiple workers for different samples (not implemented)
-
-## Next Steps
-
-After completing the pilot study:
-
-1. **Model Selection**: Choose optimal model based on analysis results
-2. **Prompt Refinement**: Improve prompts based on error patterns
-3. **Scale-Up**: Apply chosen configuration to full dataset
-4. **Quality Control**: Implement confidence-based filtering
-5. **Production Deployment**: Integrate into full ACSES pipeline
-
-## Configuration Parameters
-
-Key parameters to tune based on pilot results:
-
-- **N_RUNS**: Increase for better consensus (trade-off: cost/time)
-- **TEMPERATURE**: Lower for consistency, higher for creativity
-- **CONFIDENCE_THRESHOLD**: Set minimum confidence for auto-approval
-- **PROMPT_TEMPLATE**: Adjust based on reasoning quality analysis
-
-## Cost Estimation
-
-Rough cost estimates for different scales:
-- Pilot (2,268 samples × 3 runs): ~7K API calls
-- Full dataset estimate: Scale accordingly
-- Consider Flash vs Pro pricing differences
-
----
+### Decision Framework
+- Model selection based on accuracy, consistency, and cost-effectiveness
+- Quality control thresholds derived from confidence calibration
+- Scalability validation for full dataset processing
 
 ## Contact & Support
 
-For questions about the ACSES pilot study implementation, refer to the project documentation or analysis results in the notebook.
+For detailed implementation guidance, refer to the comprehensive documentation in the `docs/` folder or the analysis notebooks for results interpretation.

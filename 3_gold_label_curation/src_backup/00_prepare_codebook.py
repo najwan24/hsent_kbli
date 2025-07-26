@@ -2,7 +2,7 @@
 ACSES Pilot Study - Phase 1: Codebook Preparation
 This script transforms the KBLI codebook into a hierarchical format suitable for LLM prompts.
 """
-
+##3__gold_label_curation/src/00_prepare_codebook.py
 import pandas as pd
 import os
 from typing import Dict, Tuple, Optional
